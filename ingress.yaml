@@ -1,0 +1,49 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-node-app
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod-cluster-issuer"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - node.mannan18.ml
+    - vimal.mannan18.ml
+    secretName: echo-tls
+  rules:
+  - host: node.mannan18.ml
+    http:
+      paths:
+      - path: /node
+        pathType: Prefix
+        backend:
+          service:
+            name: node-service
+            port:
+              number: 8080
+      - path: /ip
+        pathType: Prefix
+        backend:
+          service:
+            name: node-service2
+            port:
+              number: 80
+  - host: vimal.mannan18.ml
+    http:
+      paths:
+      - path: /node
+        pathType: Prefix
+        backend:
+          service:
+            name: node-service
+            port:
+              number: 8080
+      - path: /ip
+        pathType: Prefix
+        backend:
+          service:
+            name: node-service2
+            port:
+              number: 80
