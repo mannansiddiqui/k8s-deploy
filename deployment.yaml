@@ -1,20 +1,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: jenkins
-  name: new-node-app-deployment
+  name: deployment-node-app
+  labels:
+    app: node-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: new-node-app
+      release: node-app
   template:
     metadata:
       labels:
-        app: new-node-app
+        release: node-app
     spec:
+      volumes: 
+      - name: pv-ebs
+        persistentVolumeClaim:
+          claimName: pvc-ebs
       containers:
-      - name: new-node-app
+      - name: node-web-app
         image: mannansiddiqui/node-web-app
         ports:
         - containerPort: 8080
+        volumeMounts:
+        - name: pv-ebs
+          mountPath: /var
+        resources:
+          limits:
+            cpu: 500m
+          requests:
+            cpu: 200m
